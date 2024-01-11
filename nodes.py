@@ -10,9 +10,13 @@ task_list = [
     "image-segmentation",
 ]
 
-depth_model_name = [
+depth_model_name_list = [
     "Intel/dpt-hybrid-midas",
     "Intel/dpt-large",
+    "vinvino02/glpn-kitti",
+    "Intel/dpt-beit-large-384",
+    "Intel/dpt-beit-base-384",
+    "Intel/dpt-beit-large-512" 
 ]
 
 class TransformersPipeline:
@@ -22,7 +26,7 @@ class TransformersPipeline:
             "required": {
                 "image": ("IMAGE",),
                 "task_type": (task_list, {"default": task_list[0]}),
-                "model_name": (depth_model_name, {"default": depth_model_name[0]}),
+                "model_name": (depth_model_name_list, {"default": depth_model_name_list[0]}),
             },
         }
 
