@@ -9,7 +9,10 @@ depth_model_name_list = [
     "vinvino02/glpn-kitti",
     "Intel/dpt-beit-large-384",
     "Intel/dpt-beit-base-384",
-    "Intel/dpt-beit-large-512" 
+    "Intel/dpt-beit-large-512",
+    "LiheYoung/depth-anything-base-hf",
+    "LiheYoung/depth-anything-small-hf",
+    "LiheYoung/depth-anything-large-hf",
 ]
 
 class DepthEstimationPipeline:
