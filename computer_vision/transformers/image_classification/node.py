@@ -49,5 +49,4 @@ class ImageClassificationPipeline:
         predicted_label_name = model.config.id2label[predicted_label_id]
         predicted_score = torch.softmax(logits, -1)[0, predicted_label_id].item()
 
-        return predicted_label_name, predicted_score
-
+        return (predicted_label_name, predicted_score,)
