@@ -2,8 +2,8 @@ from transformers import pipeline
 from PIL import Image
 
 mask_generation_model_name_list = [
-    "mattmdjaga/segformer_b2_clothes",
-    "nvidia/segformer-b1-finetuned-cityscapes-1024-1024"
+    "facebook/sam-vit-base",
+    "wanglab/medsam-vit-base"
 ]
 
 class MaskGenerationPipeline:
