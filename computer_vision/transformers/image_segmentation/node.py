@@ -6,7 +6,7 @@ image_segmentation_model_name_list = [
     "nvidia/segformer-b1-finetuned-cityscapes-1024-1024"
 ]
 
-class ImageClassificationPipeline:
+class ImageSegmentationPipeline:
     @classmethod
     def INPUT_TYPES(s):
         return {
