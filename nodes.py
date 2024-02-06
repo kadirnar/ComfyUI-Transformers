@@ -1,7 +1,7 @@
-from .computer_vision.transformers.depth_estimation.node import DepthEstimationPipeline
-from .computer_vision.transformers.image_classification.node import ImageClassificationPipeline
-from .computer_vision.transformers.image_segmentation.node import ImageSegmentationPipeline
-from .computer_vision.transformers.object_detection.node import ObjectDetectionPipeline
+from .huggingface_tasks.computer_vision.transformers.depth_estimation.node import DepthEstimationPipeline
+from .huggingface_tasks.computer_vision.transformers.image_classification.node import ImageClassificationPipeline
+from .huggingface_tasks.computer_vision.transformers.image_segmentation.node import ImageSegmentationPipeline
+from .huggingface_tasks.computer_vision.transformers.object_detection.node import ObjectDetectionPipeline
 
 
 NODE_CLASS_MAPPINGS = {
