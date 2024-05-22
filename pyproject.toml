@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-transformers"
+description = "ComfyUI-Transformers is a cutting-edge project combining the power of computer vision and natural language processing to create intuitive and user-friendly interfaces. Our goal is to make technology more accessible and engaging."
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["numpy=>1.26.3", "Pillow=>10.2.0", "torch=>2.1.2", "transformers=>4.37.1"]
+
+[project.urls]
+Repository = "https://github.com/kadirnar/ComfyUI-Transformers"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-Transformers"
+Icon = ""
