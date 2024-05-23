@@ -10,6 +10,6 @@ Repository = "https://github.com/kadirnar/ComfyUI-Transformers"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "kadirnar"
 DisplayName = "ComfyUI-Transformers"
 Icon = ""
