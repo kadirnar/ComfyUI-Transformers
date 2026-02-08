@@ -4,34 +4,36 @@ import numpy as np
 import torch
 import json
 
-object_detection_model_name_list = [
-    "facebook/detr-resnet-50",
-    "hustvl/yolos-tiny",
+zero_shot_object_detection_model_list = [
+    "google/owlvit-base-patch32",
+    "google/owlv2-base-patch16-ensemble",
 ]
 
 
-class ObjectDetectionPipeline:
+class ZeroShotObjectDetectionPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
-                "model_name": (object_detection_model_name_list, {"default": object_detection_model_name_list[0]}),
-                "threshold": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.05}),
+                "candidate_labels": ("STRING", {"default": "cat, dog, person"}),
+                "model_name": (zero_shot_object_detection_model_list, {"default": zero_shot_object_detection_model_list[0]}),
+                "threshold": ("FLOAT", {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.05}),
             },
         }
 
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("annotated_image", "detections_json",)
-    FUNCTION = "object_detection_pipeline"
-    CATEGORY = "Transformers/ComputerVision/ObjectDetection"
+    FUNCTION = "run_zero_shot_detection"
+    CATEGORY = "Transformers/ComputerVision/ZeroShotObjectDetection"
 
-    def object_detection_pipeline(self, image, model_name, threshold):
+    def run_zero_shot_detection(self, image, candidate_labels, model_name, threshold):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
-        pipe = hf_pipeline("object-detection", model=model_name)
-        results = pipe(pil_image, threshold=threshold)
+        labels = [l.strip() for l in candidate_labels.split(",")]
+        pipe = hf_pipeline("zero-shot-object-detection", model=model_name)
+        results = pipe(pil_image, candidate_labels=labels, threshold=threshold)
 
         draw = ImageDraw.Draw(pil_image)
         for det in results:
@@ -43,6 +45,4 @@ class ObjectDetectionPipeline:
 
         arr = np.array(pil_image).astype(np.float32) / 255.0
         tensor_image = torch.from_numpy(arr)[None,]
-        detections_json = json.dumps(results, indent=2, default=str)
-
-        return (tensor_image, detections_json,)
+        return (tensor_image, json.dumps(results, indent=2, default=str),)

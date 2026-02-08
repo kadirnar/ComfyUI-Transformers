@@ -1,57 +1,45 @@
-from transformers import pipeline
+from transformers import pipeline as hf_pipeline
 from PIL import Image
+import numpy as np
+import torch
 
 image_segmentation_model_name_list = [
     "mattmdjaga/segformer_b2_clothes",
-    "nvidia/segformer-b1-finetuned-cityscapes-1024-1024"
+    "nvidia/segformer-b1-finetuned-cityscapes-1024-1024",
 ]
+
 
 class ImageSegmentationPipeline:
     @classmethod
-    def INPUT_TYPES(s):
+    def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
-                "category_name": ("STRING",),
+                "category_name": ("STRING", {"default": ""}),
                 "model_name": (image_segmentation_model_name_list, {"default": image_segmentation_model_name_list[0]}),
             },
         }
 
     RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("mask",)
     FUNCTION = "image_segmentation_pipeline"
+    CATEGORY = "Transformers/ComputerVision/ImageSegmentation"
 
-    CATEGORY = "ComputerVision/Transformers"
+    def image_segmentation_pipeline(self, image, category_name, model_name):
+        img = 255.0 * image[0].cpu().numpy()
+        pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
+        pipe = hf_pipeline(task="image-segmentation", model=model_name)
+        result = pipe(pil_image)
 
-def image_segmentation_pipeline(image_path: str, category_name: str, model_name: str) -> Image.Image:
-    """
-    Given an image, a category name, and a model name, extracts and returns the mask for the specified category.
+        for item in result:
+            if item["label"] == category_name:
+                mask = item["mask"]
+                arr = np.array(mask).astype(np.float32) / 255.0
+                if len(arr.shape) == 2:
+                    arr = np.stack([arr, arr, arr], axis=-1)
+                return (torch.from_numpy(arr)[None,],)
 
-    Args:
-    image_path (str): The path to the image file.
-    category_name (str): The name of the category for which the mask is to be extracted.
-    model_name (str): The name of the model to be used for image segmentation.
-
-    Returns:
-    PIL.Image.Image: The mask of the specified category, if found. Otherwise, returns None.
-
-    Example:
-    >>> image_path = "path/to/image.jpg"
-    >>> category_name = "car"
-    >>> model_name = "nvidia/segformer-b1-finetuned-cityscapes-1024-1024"
-    >>> mask = image_segmentation_pipeline(image_path, category_name, model_name)
-    """
-
-    # Create the pipeline with the specified model
-    pipe = pipeline(task="image-segmentation", model=model_name)
-
-    # Process the image
-    result = pipe(image_path)
-
-    # Search for the mask of the specified category
-    for item in result:
-        if item['label'] == category_name:
-            return (item['mask'],)
-
-    # If the category is not found, return None
-    return (None,)
+        h, w = pil_image.size[1], pil_image.size[0]
+        empty = torch.zeros(1, h, w, 3)
+        return (empty,)
