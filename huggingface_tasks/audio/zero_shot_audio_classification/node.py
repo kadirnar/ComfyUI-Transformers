@@ -1,12 +1,6 @@
 from transformers import pipeline as hf_pipeline
 import json
 
-zero_shot_audio_classification_model_list = [
-    "laion/clap-htsat-unfused",
-    "laion/larger_clap_general",
-]
-
-
 class ZeroShotAudioClassificationPipeline:
     @classmethod
     def INPUT_TYPES(cls):
@@ -14,7 +8,7 @@ class ZeroShotAudioClassificationPipeline:
             "required": {
                 "audio_path": ("STRING", {"default": ""}),
                 "candidate_labels": ("STRING", {"default": "speech, music, noise"}),
-                "model_name": (zero_shot_audio_classification_model_list, {"default": zero_shot_audio_classification_model_list[0]}),
+                "model_name": ("STRING", {"default": "laion/clap-htsat-unfused"}),
             },
         }
 
@@ -25,6 +19,6 @@ class ZeroShotAudioClassificationPipeline:
 
     def run_zero_shot_audio(self, audio_path, candidate_labels, model_name):
         labels = [l.strip() for l in candidate_labels.split(",")]
-        pipe = hf_pipeline("zero-shot-audio-classification", model=model_name)
+        pipe = hf_pipeline("zero-shot-audio-classification", model=model_name, trust_remote_code=True)
         result = pipe(audio_path, candidate_labels=labels)
         return (json.dumps(result, indent=2, default=str),)

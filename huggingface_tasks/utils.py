@@ -11,7 +11,7 @@ def get_pipeline(task, model_name, **kwargs):
     """Cached pipeline loader - avoids reloading models on every call."""
     key = (task, model_name, frozenset(kwargs.items()))
     if key not in _pipeline_cache:
-        _pipeline_cache[key] = hf_pipeline(task, model=model_name, **kwargs)
+        _pipeline_cache[key] = hf_pipeline(task, model=model_name, trust_remote_code=True, **kwargs)
     return _pipeline_cache[key]
 
 

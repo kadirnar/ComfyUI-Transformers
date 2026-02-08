@@ -1,12 +1,6 @@
 from transformers import pipeline as hf_pipeline
 import json
 
-conversational_model_list = [
-    "microsoft/DialoGPT-medium",
-    "microsoft/DialoGPT-small",
-]
-
-
 class ConversationalPipeline:
     @classmethod
     def INPUT_TYPES(cls):
@@ -14,7 +8,7 @@ class ConversationalPipeline:
             "required": {
                 "user_message": ("STRING", {"default": "", "multiline": True}),
                 "history": ("STRING", {"default": "[]", "multiline": True}),
-                "model_name": (conversational_model_list, {"default": conversational_model_list[0]}),
+                "model_name": ("STRING", {"default": "microsoft/DialoGPT-medium"}),
             },
         }
 
@@ -32,7 +26,7 @@ class ConversationalPipeline:
             messages.append({"role": "assistant", "content": turn["assistant"]})
         messages.append({"role": "user", "content": user_message})
 
-        pipe = hf_pipeline("text-generation", model=model_name)
+        pipe = hf_pipeline("text-generation", model=model_name, trust_remote_code=True)
         result = pipe(messages, max_new_tokens=128, pad_token_id=pipe.tokenizer.eos_token_id)
         response = result[0]["generated_text"][-1]["content"]
 

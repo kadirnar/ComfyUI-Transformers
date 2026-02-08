@@ -4,19 +4,13 @@ import numpy as np
 import torch
 import json
 
-object_detection_model_name_list = [
-    "facebook/detr-resnet-50",
-    "hustvl/yolos-tiny",
-]
-
-
 class ObjectDetectionPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
-                "model_name": (object_detection_model_name_list, {"default": object_detection_model_name_list[0]}),
+                "model_name": ("STRING", {"default": "facebook/detr-resnet-50"}),
                 "threshold": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.05}),
             },
         }
@@ -24,13 +18,13 @@ class ObjectDetectionPipeline:
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("annotated_image", "detections_json",)
     FUNCTION = "object_detection_pipeline"
-    CATEGORY = "Transformers/ComputerVision/ObjectDetection"
+    CATEGORY = "Transformers/ObjectDetection"
 
     def object_detection_pipeline(self, image, model_name, threshold):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
-        pipe = hf_pipeline("object-detection", model=model_name)
+        pipe = hf_pipeline("object-detection", model=model_name, trust_remote_code=True)
         results = pipe(pil_image, threshold=threshold)
 
         draw = ImageDraw.Draw(pil_image)

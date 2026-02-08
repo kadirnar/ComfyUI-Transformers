@@ -7,3 +7,5 @@ soundfile>=0.12.1
 pandas>=2.1.0
 sentencepiece>=0.1.99
 accelerate>=0.25.0
+timm
+opencv-python

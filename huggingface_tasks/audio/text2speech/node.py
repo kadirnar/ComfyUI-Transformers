@@ -4,19 +4,13 @@ import numpy as np
 import tempfile
 import os
 
-text_to_speech_model_list = [
-    "suno/bark-small",
-    "facebook/mms-tts-eng",
-]
-
-
 class TextToSpeechPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "text": ("STRING", {"default": "", "multiline": True}),
-                "model_name": (text_to_speech_model_list, {"default": text_to_speech_model_list[0]}),
+                "model_name": ("STRING", {"default": "suno/bark-small"}),
             },
         }
 
@@ -26,7 +20,7 @@ class TextToSpeechPipeline:
     CATEGORY = "Transformers/Audio/TextToSpeech"
 
     def run_tts(self, text, model_name):
-        pipe = hf_pipeline("text-to-speech", model=model_name)
+        pipe = hf_pipeline("text-to-speech", model=model_name, trust_remote_code=True)
         result = pipe(text)
 
         audio_data = result["audio"]

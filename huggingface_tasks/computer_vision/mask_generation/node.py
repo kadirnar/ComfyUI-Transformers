@@ -4,19 +4,13 @@ import numpy as np
 import torch
 import json
 
-mask_generation_model_list = [
-    "facebook/sam-vit-base",
-    "facebook/sam-vit-large",
-]
-
-
 class MaskGenerationPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
-                "model_name": (mask_generation_model_list, {"default": mask_generation_model_list[0]}),
+                "model_name": ("STRING", {"default": "facebook/sam-vit-base"}),
                 "points_per_batch": ("INT", {"default": 64, "min": 1, "max": 256}),
             },
         }
@@ -24,13 +18,13 @@ class MaskGenerationPipeline:
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("overlay_image", "masks_json",)
     FUNCTION = "run_mask_generation"
-    CATEGORY = "Transformers/ComputerVision/MaskGeneration"
+    CATEGORY = "Transformers/MaskGeneration"
 
     def run_mask_generation(self, image, model_name, points_per_batch):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
-        pipe = hf_pipeline("mask-generation", model=model_name, points_per_batch=points_per_batch)
+        pipe = hf_pipeline("mask-generation", model=model_name, points_per_batch=points_per_batch, trust_remote_code=True)
         result = pipe(pil_image)
 
         overlay = np.array(pil_image).astype(np.float32)

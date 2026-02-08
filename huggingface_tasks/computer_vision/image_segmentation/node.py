@@ -3,12 +3,6 @@ from PIL import Image
 import numpy as np
 import torch
 
-image_segmentation_model_name_list = [
-    "mattmdjaga/segformer_b2_clothes",
-    "nvidia/segformer-b1-finetuned-cityscapes-1024-1024",
-]
-
-
 class ImageSegmentationPipeline:
     @classmethod
     def INPUT_TYPES(cls):
@@ -16,20 +10,20 @@ class ImageSegmentationPipeline:
             "required": {
                 "image": ("IMAGE",),
                 "category_name": ("STRING", {"default": ""}),
-                "model_name": (image_segmentation_model_name_list, {"default": image_segmentation_model_name_list[0]}),
+                "model_name": ("STRING", {"default": "mattmdjaga/segformer_b2_clothes"}),
             },
         }
 
     RETURN_TYPES = ("IMAGE",)
     RETURN_NAMES = ("mask",)
     FUNCTION = "image_segmentation_pipeline"
-    CATEGORY = "Transformers/ComputerVision/ImageSegmentation"
+    CATEGORY = "Transformers/ImageSegmentation"
 
     def image_segmentation_pipeline(self, image, category_name, model_name):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
-        pipe = hf_pipeline(task="image-segmentation", model=model_name)
+        pipe = hf_pipeline(task="image-segmentation", model=model_name, trust_remote_code=True)
         result = pipe(pil_image)
 
         for item in result:

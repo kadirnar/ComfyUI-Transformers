@@ -9,14 +9,11 @@ from .huggingface_tasks.computer_vision.zero_shot_image_classification.node impo
 from .huggingface_tasks.computer_vision.zero_shot_object_detection.node import ZeroShotObjectDetectionPipeline
 from .huggingface_tasks.computer_vision.mask_generation.node import MaskGenerationPipeline
 from .huggingface_tasks.computer_vision.video_classification.node import VideoClassificationPipeline
-from .huggingface_tasks.computer_vision.keypoint_detection.node import KeypointDetectionPipeline
+
 
 # NLP
 from .huggingface_tasks.natural_language_processing.text_classification.node import TextClassificationPipeline
 from .huggingface_tasks.natural_language_processing.text_generation.node import TextGenerationPipeline
-from .huggingface_tasks.natural_language_processing.text2text_generation.node import Text2TextGenerationPipeline
-from .huggingface_tasks.natural_language_processing.summarization.node import SummarizationPipeline
-from .huggingface_tasks.natural_language_processing.translation.node import TranslationPipeline
 from .huggingface_tasks.natural_language_processing.token_classification.node import TokenClassificationPipeline
 from .huggingface_tasks.natural_language_processing.fill_mask.node import FillMaskPipeline
 from .huggingface_tasks.natural_language_processing.question_answering.node import QuestionAnsweringPipeline
@@ -30,6 +27,9 @@ from .huggingface_tasks.audio.automatic_speech_recognition.node import Automatic
 from .huggingface_tasks.audio.audio_classification.node import AudioClassificationPipeline
 from .huggingface_tasks.audio.text2speech.node import TextToSpeechPipeline
 from .huggingface_tasks.audio.zero_shot_audio_classification.node import ZeroShotAudioClassificationPipeline
+
+# Utility
+from .huggingface_tasks.utility.node import IntToString, StringToInt, FloatToString, StringToFloat
 
 # Multimodal
 from .huggingface_tasks.multimodal.feature_extraction.node import FeatureExtractionPipeline
@@ -52,13 +52,9 @@ NODE_CLASS_MAPPINGS = {
     "ZeroShotObjectDetectionPipeline": ZeroShotObjectDetectionPipeline,
     "MaskGenerationPipeline": MaskGenerationPipeline,
     "VideoClassificationPipeline": VideoClassificationPipeline,
-    "KeypointDetectionPipeline": KeypointDetectionPipeline,
     # NLP
     "TextClassificationPipeline": TextClassificationPipeline,
     "TextGenerationPipeline": TextGenerationPipeline,
-    "Text2TextGenerationPipeline": Text2TextGenerationPipeline,
-    "SummarizationPipeline": SummarizationPipeline,
-    "TranslationPipeline": TranslationPipeline,
     "TokenClassificationPipeline": TokenClassificationPipeline,
     "FillMaskPipeline": FillMaskPipeline,
     "QuestionAnsweringPipeline": QuestionAnsweringPipeline,
@@ -77,6 +73,11 @@ NODE_CLASS_MAPPINGS = {
     "VisualQuestionAnsweringPipeline": VisualQuestionAnsweringPipeline,
     "DocumentQuestionAnsweringPipeline": DocumentQuestionAnsweringPipeline,
     "ImageTextToTextPipeline": ImageTextToTextPipeline,
+    # Utility
+    "IntToString": IntToString,
+    "StringToInt": StringToInt,
+    "FloatToString": FloatToString,
+    "StringToFloat": StringToFloat,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -92,13 +93,9 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ZeroShotObjectDetectionPipeline": "Zero-Shot Object Detection",
     "MaskGenerationPipeline": "Mask Generation",
     "VideoClassificationPipeline": "Video Classification",
-    "KeypointDetectionPipeline": "Keypoint Detection",
     # NLP
     "TextClassificationPipeline": "Text Classification",
     "TextGenerationPipeline": "Text Generation",
-    "Text2TextGenerationPipeline": "Text2Text Generation",
-    "SummarizationPipeline": "Summarization",
-    "TranslationPipeline": "Translation",
     "TokenClassificationPipeline": "Token Classification (NER)",
     "FillMaskPipeline": "Fill Mask",
     "QuestionAnsweringPipeline": "Question Answering",
@@ -117,4 +114,9 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "VisualQuestionAnsweringPipeline": "Visual Question Answering",
     "DocumentQuestionAnsweringPipeline": "Document Question Answering",
     "ImageTextToTextPipeline": "Image-Text to Text",
+    # Utility
+    "IntToString": "Int to String",
+    "StringToInt": "String to Int",
+    "FloatToString": "Float to String",
+    "StringToFloat": "String to Float",
 }

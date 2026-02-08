@@ -4,12 +4,6 @@ import numpy as np
 import torch
 import json
 
-zero_shot_object_detection_model_list = [
-    "google/owlvit-base-patch32",
-    "google/owlv2-base-patch16-ensemble",
-]
-
-
 class ZeroShotObjectDetectionPipeline:
     @classmethod
     def INPUT_TYPES(cls):
@@ -17,7 +11,7 @@ class ZeroShotObjectDetectionPipeline:
             "required": {
                 "image": ("IMAGE",),
                 "candidate_labels": ("STRING", {"default": "cat, dog, person"}),
-                "model_name": (zero_shot_object_detection_model_list, {"default": zero_shot_object_detection_model_list[0]}),
+                "model_name": ("STRING", {"default": "google/owlvit-base-patch32"}),
                 "threshold": ("FLOAT", {"default": 0.1, "min": 0.0, "max": 1.0, "step": 0.05}),
             },
         }
@@ -25,14 +19,14 @@ class ZeroShotObjectDetectionPipeline:
     RETURN_TYPES = ("IMAGE", "STRING",)
     RETURN_NAMES = ("annotated_image", "detections_json",)
     FUNCTION = "run_zero_shot_detection"
-    CATEGORY = "Transformers/ComputerVision/ZeroShotObjectDetection"
+    CATEGORY = "Transformers/ZeroShotObjectDetection"
 
     def run_zero_shot_detection(self, image, candidate_labels, model_name, threshold):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
         labels = [l.strip() for l in candidate_labels.split(",")]
-        pipe = hf_pipeline("zero-shot-object-detection", model=model_name)
+        pipe = hf_pipeline("zero-shot-object-detection", model=model_name, trust_remote_code=True)
         results = pipe(pil_image, candidate_labels=labels, threshold=threshold)
 
         draw = ImageDraw.Draw(pil_image)

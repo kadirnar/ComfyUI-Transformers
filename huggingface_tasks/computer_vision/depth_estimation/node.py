@@ -6,25 +6,19 @@ import comfy.model_management as mm
 from comfy.utils import ProgressBar
 import torchvision.transforms.functional as F
 
-depth_model_name_list = [
-    "Intel/dpt-hybrid-midas",
-    "LiheYoung/depth-anything-small-hf",
-    "facebook/dpt-dinov2-small-nyu",
-]
-
 class LoadDepthModel:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model_name": (depth_model_name_list, {"default": depth_model_name_list[0]}),
+                "model_name": ("STRING", {"default": "Intel/dpt-hybrid-midas"}),
             },
         }
 
     RETURN_TYPES = ("DEPTH_MODEL", "IMAGE_PROCESSOR")
     FUNCTION = "load_depth_model"
 
-    CATEGORY = "ComputerVision/Transformers/DepthEstimation"
+    CATEGORY = "Transformers/DepthEstimation"
 
     def load_depth_model(self, model_name):
         model = AutoModelForDepthEstimation.from_pretrained(model_name, trust_remote_code=True)
@@ -46,7 +40,7 @@ class DepthEstimationInference:
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "depth_inference"
 
-    CATEGORY = "Transformers/ComputerVision/DepthEstimation"
+    CATEGORY = "Transformers/DepthEstimation"
 
     def depth_inference(self, image, model, processor):
         # Convert ComfyUI image to PIL image

@@ -3,32 +3,26 @@ from PIL import Image
 import numpy as np
 import json
 
-image_feature_extraction_model_list = [
-    "google/vit-base-patch16-224",
-    "facebook/dinov2-small",
-]
-
-
 class ImageFeatureExtractionPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "image": ("IMAGE",),
-                "model_name": (image_feature_extraction_model_list, {"default": image_feature_extraction_model_list[0]}),
+                "model_name": ("STRING", {"default": "google/vit-base-patch16-224"}),
             },
         }
 
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("features_json",)
     FUNCTION = "run_feature_extraction"
-    CATEGORY = "Transformers/ComputerVision/ImageFeatureExtraction"
+    CATEGORY = "Transformers/ImageFeatureExtraction"
 
     def run_feature_extraction(self, image, model_name):
         img = 255.0 * image[0].cpu().numpy()
         pil_image = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8))
 
-        pipe = hf_pipeline("image-feature-extraction", model=model_name)
+        pipe = hf_pipeline("image-feature-extraction", model=model_name, trust_remote_code=True)
         result = pipe(pil_image)
 
         features = np.array(result[0]).tolist()

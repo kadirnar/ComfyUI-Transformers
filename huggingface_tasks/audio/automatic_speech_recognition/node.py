@@ -1,19 +1,12 @@
 from transformers import pipeline as hf_pipeline
 
-asr_model_list = [
-    "openai/whisper-tiny",
-    "openai/whisper-base",
-    "openai/whisper-small",
-]
-
-
 class AutomaticSpeechRecognitionPipeline:
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
                 "audio_path": ("STRING", {"default": ""}),
-                "model_name": (asr_model_list, {"default": asr_model_list[0]}),
+                "model_name": ("STRING", {"default": "openai/whisper-tiny"}),
                 "language": ("STRING", {"default": "english"}),
             },
         }
@@ -27,6 +20,6 @@ class AutomaticSpeechRecognitionPipeline:
         generate_kwargs = {}
         if language:
             generate_kwargs["language"] = language
-        pipe = hf_pipeline("automatic-speech-recognition", model=model_name)
+        pipe = hf_pipeline("automatic-speech-recognition", model=model_name, trust_remote_code=True)
         result = pipe(audio_path, generate_kwargs=generate_kwargs)
         return (result["text"],)
